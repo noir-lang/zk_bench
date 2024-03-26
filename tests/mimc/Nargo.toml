@@ -1,0 +1,6 @@
+[package]
+name = "mimc"
+type = "bin"
+authors = [""]
+
+[dependencies]
