@@ -1,0 +1,49 @@
+name: PR - vite-hardhat
+on:
+  pull_request:
+    paths:
+      - 'vite-hardhat/**'
+
+jobs:
+  test-vite-hardhat:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vite-hardhat
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest version
+        id: versions_step
+        run: |
+          output=$(node ../.github/scripts/latest.js)
+          echo "Output from Node.js script: $output"
+
+          STABLE=$(echo $output | jq -r '.stable')
+          echo "::set-output name=stable::$STABLE"
+
+      - name: Set up yarn
+        uses: ./.github/actions/setup-yarn
+        with:
+          project: vite-hardhat
+
+      - name: Set up nargo
+        uses: ./.github/actions/setup-nargo
+        with:
+          version: ${{ steps.versions_step.outputs.stable }}
+
+      - name: Enable Corepack before setting up Node
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+          cache: 'yarn'
+
+      - name: Install
+        run: yarn --immutable
+        shell: bash
+
+      - name: Run test
+        run: yarn test

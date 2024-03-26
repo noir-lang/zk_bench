@@ -1,0 +1,8 @@
+.vscode
+.DS_Store
+
+node_modules
+package-lock.json
+
+# To use with nektos/act
+.github/event.json
