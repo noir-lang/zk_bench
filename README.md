@@ -1,25 +1,24 @@
-# Noir Starters
+# ZK Benchmark
 
-This is a reference repo to help you get started with writing zero-knowledge circuits with [Noir](https://noir-lang.org/).
+This is a small tool that run Circom and Noir on a set of examples from the tests folder.
 
-Each project is an example you can use as template. Feel free to mix them in order to find the best combination of technology that suits your needs.
+
 
 ## Getting started
 
-If you have [node](https://nodejs.org/en/download) installed, just open a terminal and run:
+You need to have both Noir and Circom properly installed. Then you need to provide binary paths in circom.rs and noir.rs
 
-```bash
-npx create-noir
-```
+### Tests
 
-### Templates
+Tests are using [Circom lib](https://github.com/iden3/circomlib/) and [Noir stdlib](https://github.com/noir-lang/noir/tree/master/noir_stdlib)
 
-- Foundry: [`./with-foundry`](./with-foundry)
-- Vite + Hardhat: [`./vite-hardhat`](./vite-hardhat)
+- eddsa: eddsa signature verification. Not enabled yet
+- gates: AND the inputs together
+- mimc: mimc hash of the input
+- pedersen: pedersen hash of the input
+- poseidon: poseidon hash of the input
+- sha256: sha256 hash of the input
 
-## Example Projects
-
-You can view more complete example projects written in Noir in the [Noir Examples](https://github.com/noir-lang/noir-examples) repo.
 
 ## Support
 
