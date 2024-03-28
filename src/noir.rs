@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 
 use crate::suite::Language;
 
-const NARGO_BINARY: &str = "TODO";
+const NARGO_BINARY: &str = "nargo";
 
 impl Language for Noir {
     fn init(&mut self, _entry_point: &Path) -> Result<(), String> {
@@ -11,7 +11,7 @@ impl Language for Noir {
     }
 
     fn compile(&self, entry_point: &Path) -> Result<PathBuf, String> {
-        let mut cmd = Command::cargo_bin(NARGO_BINARY).unwrap();
+        let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(entry_point);
         cmd.arg("compile");
         cmd.arg("--force");
@@ -29,13 +29,24 @@ impl Language for Noir {
     }
 
     fn info(&self, entry_point: &Path) -> Result<String, String> {
-        let mut cmd = Command::cargo_bin(NARGO_BINARY).unwrap();
+        let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(entry_point);
+        cmd.arg("info");
         cmd.arg("info");
 
         let output = cmd.output().expect("Failed to execute command");
         let (acir_size, circuit_size) = if output.status.success() {
-            parse_nargo_info(output.stdout)?
+            let json: serde_json::Value =
+                serde_json::from_slice(&output.stdout).unwrap_or_else(|e| {
+                    panic!(
+                        "JSON was not well-formatted {{:?}}\n\n{{:?}}",
+                        e,
+                        std::str::from_utf8(&output.stdout)
+                    )
+                });
+
+            let num_opcodes = &json["programs"][0]["acir_opcodes"];
+            let num_opcodes = &json["programs"][0]["gates"];
         } else {
             return Err(format!(
                 "`nargo info` failed with: {}",
@@ -51,7 +62,7 @@ impl Language for Noir {
     }
 
     fn execute(&self, entry_point: &Path) -> Result<PathBuf, String> {
-        let mut cmd = Command::cargo_bin(NARGO_BINARY).unwrap();
+        let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(entry_point);
         cmd.arg("execute");
 
@@ -65,7 +76,7 @@ impl Language for Noir {
     }
 
     fn prove(&self, _key: &Path, witness: &Path) -> Result<PathBuf, String> {
-        let mut cmd = Command::cargo_bin(NARGO_BINARY).unwrap();
+        let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(witness);
         cmd.arg("prove");
 
