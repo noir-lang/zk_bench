@@ -22,5 +22,5 @@ template Main(n) {
 
 }
 
-component main = Main(2);
+component main = Main(80);
 

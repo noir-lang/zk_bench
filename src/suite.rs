@@ -29,7 +29,8 @@ pub fn run() -> Result<(), String> {
     for test in tests {
         let test_name = test.file_name();
         if test_name.to_str().unwrap().contains("eddsa") {
-            //avoid eddsa because inputs are not valid...TODO
+            benchme(test.path(), &mut circom)?;
+            //avoid eddsa noir because inputs are not valid...TODO
             continue;
         }
         benchme(test.path(), &mut circom)?;
