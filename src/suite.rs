@@ -27,12 +27,7 @@ pub fn run() -> Result<(), String> {
         .flatten()
         .filter(|c| c.path().is_dir());
     for test in tests {
-        let test_name = test.file_name();
-        if test_name.to_str().unwrap().contains("eddsa") {
-            benchme(test.path(), &mut circom)?;
-            //avoid eddsa noir because inputs are not valid...TODO
-            continue;
-        }
+        //let test_name = test.file_name();
         benchme(test.path(), &mut circom)?;
         benchme(test.path(), &mut noir)?;
     }
