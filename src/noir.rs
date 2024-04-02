@@ -32,21 +32,22 @@ impl Language for Noir {
         let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(entry_point);
         cmd.arg("info");
-        cmd.arg("info");
+        cmd.arg("--json");
 
         let output = cmd.output().expect("Failed to execute command");
         let (acir_size, circuit_size) = if output.status.success() {
             let json: serde_json::Value =
                 serde_json::from_slice(&output.stdout).unwrap_or_else(|e| {
                     panic!(
-                        "JSON was not well-formatted {{:?}}\n\n{{:?}}",
+                        "JSON was not well-formatted {:?}\n\n{:?}",
                         e,
                         std::str::from_utf8(&output.stdout)
                     )
                 });
 
-            let num_opcodes = &json["programs"][0]["acir_opcodes"];
-            let num_opcodes = &json["programs"][0]["gates"];
+            let num_opcodes = json["programs"][0]["acir_opcodes"].as_u64().unwrap();
+            let num_gates = json["programs"][0]["gates"].as_u64().unwrap();
+            (num_opcodes, num_gates)
         } else {
             return Err(format!(
                 "`nargo info` failed with: {}",
