@@ -7,7 +7,7 @@ use tempfile::{tempdir, TempDir};
 
 use crate::suite::Language;
 
-const CIRCOM_BINARY: &str = "TODO";
+const CIRCOM_BINARY: &str = "circom";
 const SNARKJS_BINARY: &str = "yarn snarkjs";
 
 pub struct Circom {
@@ -22,7 +22,7 @@ impl Language for Circom {
 
     fn compile(&self, entry_point: &Path) -> Result<PathBuf, String> {
         //circom circuit.circom --r1cs --wasm --sym
-        let mut command = std::process::Command::new("circom");
+        let mut command = std::process::Command::new(CIRCOM_BINARY);
         let temp_directory_path = self.get_temp_dir().path();
         let output = command
             .arg(entry_point.join("main.circom"))
@@ -126,8 +126,8 @@ impl Language for Circom {
             .map_err(|c| format!("Error running snarkjs: {}", c))?;
 
         if output.status.success() {
-            // println!("{:?}", output.stdout);
-            let str = String::from_utf8_lossy(&output.stdout).to_string();
+            let _str = String::from_utf8_lossy(&output.stdout).to_string();
+            // We get some output from node
             // assert!(str.is_empty(), "{str}");
             Ok(witnesses)
         } else {
@@ -156,7 +156,8 @@ impl Language for Circom {
             .map_err(|c| format!("Error running snarkjs: {}", c))?;
 
         if output.status.success() {
-            let str = String::from_utf8_lossy(&output.stdout).to_string();
+            let _str = String::from_utf8_lossy(&output.stdout).to_string();
+            // We get some output from node
             // assert!(str.is_empty());
             Ok(proof_path)
         } else {

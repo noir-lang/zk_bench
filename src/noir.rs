@@ -46,7 +46,7 @@ impl Language for Noir {
                 });
 
             let num_opcodes = json["programs"][0]["acir_opcodes"].as_u64().unwrap();
-            let num_gates = json["programs"][0]["gates"].as_u64().unwrap();
+            let num_gates = json["programs"][0]["circuit_size"].as_u64().unwrap();
             (num_opcodes, num_gates)
         } else {
             return Err(format!(
@@ -100,33 +100,3 @@ impl Language for Noir {
 }
 
 pub struct Noir {}
-
-fn parse_nargo_info(stdout: Vec<u8>) -> Result<(u32, u32), String> {
-    let str = String::from_utf8_lossy(&stdout).to_string();
-    for line in str.lines() {
-        let mut next = 0;
-        let mut acir_size = 0;
-        let circuit_size;
-        for word in line.split('|') {
-            if next == 1 {
-                circuit_size = word
-                    .trim()
-                    .parse::<u32>()
-                    .map_err(|c| format!("Error parsing nargo info: {}", c))?;
-                return Ok((acir_size, circuit_size));
-            } else if next == 2 {
-                acir_size = word
-                    .trim()
-                    .parse::<u32>()
-                    .map_err(|c| format!("Error parsing nargo info: {}", c))?;
-                next -= 1;
-            } else if word.contains("Bounded") {
-                next = 2;
-            }
-        }
-    }
-    Err(format!(
-        "Error, could not get the number of constraints: {}",
-        str
-    ))
-}
