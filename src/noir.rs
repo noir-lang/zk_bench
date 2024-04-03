@@ -28,14 +28,14 @@ impl Language for Noir {
         }
     }
 
-    fn info(&self, entry_point: &Path) -> Result<String, String> {
+    fn info(&self, entry_point: &Path) -> Result<(Option<u64>, u64), String> {
         let mut cmd = Command::new(NARGO_BINARY);
         cmd.arg("--program-dir").arg(entry_point);
         cmd.arg("info");
         cmd.arg("--json");
 
         let output = cmd.output().expect("Failed to execute command");
-        let (acir_size, circuit_size) = if output.status.success() {
+        if output.status.success() {
             let json: serde_json::Value =
                 serde_json::from_slice(&output.stdout).unwrap_or_else(|e| {
                     panic!(
@@ -47,15 +47,13 @@ impl Language for Noir {
 
             let num_opcodes = json["programs"][0]["acir_opcodes"].as_u64().unwrap();
             let num_gates = json["programs"][0]["circuit_size"].as_u64().unwrap();
-            (num_opcodes, num_gates)
+            Ok((Some(num_opcodes), num_gates))
         } else {
-            return Err(format!(
+            Err(format!(
                 "`nargo info` failed with: {}",
                 String::from_utf8(output.stderr).unwrap_or_default()
-            ));
-        };
-        let result = format!("{} ({} acir)", circuit_size, acir_size);
-        Ok(result)
+            ))
+        }
     }
 
     fn setup(&self, _entry_point: &Path) -> Result<PathBuf, String> {
@@ -93,10 +91,6 @@ impl Language for Noir {
     }
 
     fn done(&mut self) {}
-
-    fn name(&self) -> String {
-        String::from("Noir")
-    }
 }
 
-pub struct Noir {}
+pub struct Noir;
