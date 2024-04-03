@@ -8,6 +8,11 @@ template Main(n) {
 
     component multi = MultiAND(3);
 
+    // Enforce that inputs are boolean.
+    in[0] === in[0] * in[0];
+    in[1] === in[1] * in[1];
+    in[2] === in[2] * in[2];
+
     multi.in[0] <== in[0];
     multi.in[1] <== in[1];
     multi.in[2] <== in[2];
