@@ -3,7 +3,7 @@
 
 node_modules
 package-lock.json
+target
+proofs
 
-# To use with nektos/act
-.github/event.json
-tests/eddsa/Verifier.toml
+Verifier.toml

@@ -7,9 +7,8 @@ use tempfile::{tempdir, TempDir};
 
 use crate::suite::Language;
 
-const CIRCOM_BINARY: &str = "TODO";
-const SNARKJS_BINARY: &str = "/usr/local/bin/snarkjs";
-const NODE_BINARY: &str = "/usr/local/bin/node";
+const CIRCOM_BINARY: &str = "circom";
+const SNARKJS_BINARY: &str = "yarn snarkjs";
 
 pub struct Circom {
     temp_dir: Option<TempDir>,
@@ -23,8 +22,7 @@ impl Language for Circom {
 
     fn compile(&self, entry_point: &Path) -> Result<PathBuf, String> {
         //circom circuit.circom --r1cs --wasm --sym
-        let circom = circom()?;
-        let mut command = std::process::Command::new(circom);
+        let mut command = std::process::Command::new(CIRCOM_BINARY);
         let temp_directory_path = self.get_temp_dir().path();
         let output = command
             .arg(entry_point.join("main.circom"))
@@ -54,9 +52,9 @@ impl Language for Circom {
     fn info(&self, entry_point: &Path) -> Result<String, String> {
         //snarkjs r1cs info mon_fichier.r1cs
 
-        let snarkjs = snarkjs()?;
-        let mut command = std::process::Command::new(snarkjs);
+        let mut command = std::process::Command::new("yarn");
         let output = command
+            .arg("snarkjs")
             .arg("r1cs")
             .arg("info")
             .arg(entry_point)
@@ -85,13 +83,13 @@ impl Language for Circom {
 
     fn setup(&self, entry_point: &Path) -> Result<PathBuf, String> {
         //snarkjs groth16 setup mon.r1cs pot15_final.ptau ma.zkey
-        let snarkjs = snarkjs().unwrap();
-        let mut command = std::process::Command::new(snarkjs);
+        let mut command = std::process::Command::new("yarn");
 
         let tau = powers_of_tau().unwrap();
         let temp_directory_path = self.get_temp_dir().path();
         let key_path = temp_directory_path.join("circom.key");
         command
+            .arg("snarkjs")
             .arg("groth16")
             .arg("setup")
             .arg(entry_point)
@@ -104,7 +102,6 @@ impl Language for Circom {
 
     fn execute(&self, entry_point: &Path) -> Result<PathBuf, String> {
         //node generate_witness.js multiplier2.wasm input.json witness.wtns
-        let nodejs = nodejs()?;
 
         let witness_js = self
             .get_temp_dir()
@@ -118,8 +115,9 @@ impl Language for Circom {
         let witnesses = temp_directory.join("witness.wts");
         let inputs = entry_point.join("input.json");
 
-        let mut command = std::process::Command::new(nodejs);
+        let mut command = std::process::Command::new("yarn");
         let output = command
+            .arg("node")
             .arg(witness_js)
             .arg(wasm_file)
             .arg(inputs) //TODO on devrait l'avoir celui la
@@ -128,8 +126,9 @@ impl Language for Circom {
             .map_err(|c| format!("Error running snarkjs: {}", c))?;
 
         if output.status.success() {
-            let str = String::from_utf8_lossy(&output.stdout).to_string();
-            assert!(str.is_empty());
+            let _str = String::from_utf8_lossy(&output.stdout).to_string();
+            // We get some output from node
+            // assert!(str.is_empty(), "{str}");
             Ok(witnesses)
         } else {
             let msg = String::from_utf8_lossy(&output.stderr).to_string(); //string_from_stderr...
@@ -144,9 +143,9 @@ impl Language for Circom {
         let proof_path = temp_directory_path.join("proof.json");
         let public = PathBuf::from("public.json");
 
-        let snarkjs = snarkjs().unwrap();
-        let mut command = std::process::Command::new(snarkjs);
+        let mut command = std::process::Command::new("yarn");
         let output = command
+            .arg("snarkjs")
             .arg("groth16")
             .arg("prove")
             .arg(key)
@@ -157,8 +156,9 @@ impl Language for Circom {
             .map_err(|c| format!("Error running snarkjs: {}", c))?;
 
         if output.status.success() {
-            let str = String::from_utf8_lossy(&output.stdout).to_string();
-            assert!(str.is_empty());
+            let _str = String::from_utf8_lossy(&output.stdout).to_string();
+            // We get some output from node
+            // assert!(str.is_empty());
             Ok(proof_path)
         } else {
             let msg = String::from_utf8_lossy(&output.stderr).to_string(); //string_from_stderr...
@@ -190,23 +190,6 @@ impl Circom {
     pub fn new() -> Circom {
         Circom { temp_dir: None }
     }
-}
-
-pub fn snarkjs() -> Result<PathBuf, String> {
-    get_path(SNARKJS_BINARY)
-}
-
-pub fn circom() -> Result<PathBuf, String> {
-    get_path(CIRCOM_BINARY)
-}
-
-pub fn nodejs() -> Result<PathBuf, String> {
-    get_path(NODE_BINARY)
-}
-
-fn get_path(binary_path: &str) -> Result<PathBuf, String> {
-    let binary_path = PathBuf::from(binary_path);
-    assert_file(binary_path)
 }
 
 pub fn powers_of_tau() -> Result<PathBuf, String> {
