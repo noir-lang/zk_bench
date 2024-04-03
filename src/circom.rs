@@ -8,7 +8,7 @@ use tempfile::{tempdir, TempDir};
 use crate::suite::Language;
 
 const CIRCOM_BINARY: &str = "circom";
-const SNARKJS_BINARY: &str = "yarn snarkjs";
+// const SNARKJS_BINARY: &str = "yarn snarkjs";
 
 pub struct Circom {
     temp_dir: Option<TempDir>,
@@ -49,7 +49,7 @@ impl Language for Circom {
         Ok(temp_directory_path.join("main.r1cs"))
     }
 
-    fn info(&self, entry_point: &Path) -> Result<String, String> {
+    fn info(&self, entry_point: &Path) -> Result<(Option<u64>, u64), String> {
         //snarkjs r1cs info mon_fichier.r1cs
 
         let mut command = std::process::Command::new("yarn");
@@ -68,7 +68,7 @@ impl Language for Circom {
                     let result = line[pos + 13..]
                         .parse::<u32>()
                         .map_err(|c| format!("Error running snarkjs: {}", c))?;
-                    return Ok(result.to_string());
+                    return Ok((None, result as u64));
                 }
             }
             Err(format!(
@@ -169,11 +169,8 @@ impl Language for Circom {
     fn done(&mut self) {
         self.close_temp_dir();
     }
-
-    fn name(&self) -> String {
-        String::from("Circom (groth16)")
-    }
 }
+
 impl Circom {
     fn new_temp_dir(&mut self) {
         self.temp_dir = Some(tempdir().expect("could not create a temporary directory"));
