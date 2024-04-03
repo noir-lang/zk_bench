@@ -141,7 +141,7 @@ impl Language for Circom {
         let temp_directory = tempdir().expect("could not create a temporary directory");
         let temp_directory_path = temp_directory.path();
         let proof_path = temp_directory_path.join("proof.json");
-        let public = PathBuf::from("public.json");
+        let public = temp_directory_path.join("public.json");
 
         let mut command = std::process::Command::new("yarn");
         let output = command
