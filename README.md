@@ -6,13 +6,13 @@ This is a small tool that run Circom and Noir on a set of examples from the test
 
 ## Getting started
 
-You need to have both Noir and Circom properly installed. Then you need to provide binary paths in circom.rs and noir.rs
+You need to have both Noir and Circom properly installed.
 
 ### Tests
 
 Tests are using [Circom lib](https://github.com/iden3/circomlib/) and [Noir stdlib](https://github.com/noir-lang/noir/tree/master/noir_stdlib)
 
-- eddsa: eddsa signature verification. Not enabled yet
+- eddsa: eddsa signature verification.
 - gates: AND the inputs together
 - mimc: mimc hash of the input
 - pedersen: pedersen hash of the input
