@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "author": "",
   "license": "(MIT OR Apache-2.0)",
-  "dev-dependencies": {},
   "devDependencies": {
     "snarkjs": "^0.7.3"
   }

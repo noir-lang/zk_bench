@@ -1,0 +1,10 @@
+use dep::std::hash::poseidon;
+
+fn main(input: [[field; 2]; 30]) -> pub [field; 30] {
+    let mut results: [Field; 30] = [0; 30];
+    for i in 0..30 {
+        results[i] = poseidon::bn254::hash_2(input[i]);
+    }
+
+    results
+}

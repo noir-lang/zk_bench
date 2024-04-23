@@ -1,0 +1,6 @@
+[package]
+name = "pedersen_30"
+type = "bin"
+authors = [""]
+
+[dependencies]

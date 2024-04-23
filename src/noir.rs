@@ -45,8 +45,12 @@ impl Language for Noir {
                     )
                 });
 
-            let num_opcodes = json["programs"][0]["acir_opcodes"].as_u64().unwrap();
-            let num_gates = json["programs"][0]["circuit_size"].as_u64().unwrap();
+            let num_opcodes = json["programs"][0]["functions"][0]["acir_opcodes"]
+                .as_u64()
+                .unwrap();
+            let num_gates = json["programs"][0]["functions"][0]["circuit_size"]
+                .as_u64()
+                .unwrap();
             Ok((Some(num_opcodes), num_gates))
         } else {
             Err(format!(

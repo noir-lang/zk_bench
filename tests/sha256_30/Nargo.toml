@@ -1,0 +1,6 @@
+[package]
+name = "sha256_30"
+type = "bin"
+authors = [""]
+
+[dependencies]
