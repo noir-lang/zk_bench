@@ -1,9 +1,13 @@
 .vscode
 .DS_Store
 
+.yarn
+.yarnrc.yml
 node_modules
 package-lock.json
 target
 proofs
 
 Verifier.toml
+
+powersOfTau28_hez_final_20.ptau
