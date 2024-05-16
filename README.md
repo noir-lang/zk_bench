@@ -23,6 +23,8 @@ This is a small tool that run Circom and Noir on a set of examples from the test
 4. `bash download_ptau.sh`
 5. `cargo run`
 
+It then benchmarks tests in the `./tests/` directory.
+
 ### Tests
 
 Tests are using [Circom lib](https://github.com/iden3/circomlib/) and [Noir stdlib](https://github.com/noir-lang/noir/tree/master/noir_stdlib)
