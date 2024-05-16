@@ -23,7 +23,7 @@ This is a small tool that run Circom and Noir on a set of examples from the test
 4. `bash download_ptau.sh`
 5. `cargo run`
 
-It then benchmarks tests in the `./tests/` directory.
+It then benchmarks tests in the `./tests/` directory. Note that some of the tests might take minutes to run.
 
 ### Tests
 
