@@ -6,7 +6,22 @@ This is a small tool that run Circom and Noir on a set of examples from the test
 
 ## Getting started
 
-You need to have both Noir and Circom properly installed.
+### Prerequisites
+
+1. Install wget (macOS with Homebrew: `brew install wget`)
+2. Install b2sum (macOS with Homebrew: `brew install blake2`)
+3. Install [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
+4. Install [Rust](https://www.rust-lang.org/tools/install)
+5. Install [Nargo](https://noir-lang.org/docs/getting_started/installation/)
+6. Install [Circom](https://docs.circom.io/getting-started/installation/#installing-circom)
+
+### Benchmarking
+
+1. `git clone https://github.com/noir-lang/zk_bench.git`
+2. `cd zk_bench`
+3. `yarn`
+4. `bash download_ptau.sh`
+5. `cargo run`
 
 ### Tests
 
