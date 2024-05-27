@@ -1,6 +1,0 @@
-[package]
-name = "ecdsa"
-type = "bin"
-authors = [""]
-
-[dependencies]
